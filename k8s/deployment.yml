@@ -29,3 +29,8 @@ spec:
         env:
           - name: APP_ENV
             value: "production"
+          - name: SOME_KEY
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: some-key

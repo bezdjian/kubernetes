@@ -1,0 +1,39 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - kubernetes-fast-api-app_IGNORE
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        id: docker_build
+        run: |
+          IMAGE_NAME=bezdjian7/fastapi-app
+          IMAGE_TAG=${{ github.sha }}  # Use commit SHA as the tag
+          docker build -t $IMAGE_NAME:$IMAGE_TAG .
+          docker push $IMAGE_NAME:$IMAGE_TAG
+          echo "::set-output name=image::$IMAGE_NAME:$IMAGE_TAG"
+
+      - name: Update Kubernetes deployment
+        run: |
+          kubectl set image deployment/fastapi-app-deployment fastapi-app=${{ steps.docker_build.outputs.image }}
+          kubectl rollout status deployment/fastapi-app-deployment
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}  # Ensure you have your Kubeconfig set up in secrets

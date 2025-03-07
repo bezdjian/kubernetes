@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fastapi-app
+  name: fastapi-app-deployment
   labels:
-    app: fastapi-app
+    app: fastapi-app-deployment
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: fastapi-app
+      app: fastapi-app-deployment
   template:
     metadata:
       labels:
-        app: fastapi-app
+        app: fastapi-app-deployment
     spec:
       containers:
       - name: fastapi-app
@@ -29,8 +29,20 @@ spec:
         env:
           - name: APP_ENV
             value: "production"
-          - name: SOME_KEY
+          - name: MONGODB_URL
             valueFrom:
-              secretKeyRef:
-                name: my-secret
-                key: some-key
+              configMapKeyRef:
+                name: app-config-map
+                key: mongodb_url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-app-service
+spec:
+  selector:
+    app: fastapi-app-deployment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

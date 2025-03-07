@@ -35,6 +35,8 @@ spec:
                 configMapKeyRef:
                   name: app-config-map
                   key: mongodb_url
+            - name: ME_CONFIG_MONGODB_ENABLE_ADMIN
+              value: "false"
 ---
 apiVersion: v1
 kind: Service

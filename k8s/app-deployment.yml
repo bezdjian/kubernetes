@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: fastapi-app
-        image: bezdjian7/fastapi-app:0.0.4
+        image: bezdjian7/fastapi-app:latest
         ports:
         - containerPort: 80
         resources:
@@ -34,6 +34,16 @@ spec:
               configMapKeyRef:
                 name: app-config-map
                 key: mongodb_url
+          - name: MONGODB_USER
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: mongodb-root-username
+          - name: MONGODB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: mongodb-root-password
 ---
 apiVersion: v1
 kind: Service

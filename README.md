@@ -7,12 +7,12 @@ kubectl and minikube
 ### Kubernetes commands:
 ```bash 
 minikube start
-````
+```
 
 ### Apply changes
 ```bash 
 kubectl apply -f k8s
-````
+```
 
 ### Check the pods are being created
 ```bash 
@@ -28,12 +28,19 @@ minukube service list
 ### make sure of the service name to use it with below command
 ```bash 
 minikube service <service-name> --url
-````
+```
+
+### Access Mongo Express page
+```bash 
+minikube service mongo-express-service
+```
+admin:pass
+
 
 ## Local development
 
 ### Run the app in dev mode:
 ```bash
-fastapi dev app/main.py
+fastapi dev app/app.py
 ```
 
